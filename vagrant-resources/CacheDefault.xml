@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="DevOps.CacheDefault">
+<Description>
+Simple example of installation instructions (Manifest)</Description>
+<IncludeCode>%occInclude</IncludeCode>
+<TimeCreated>65568,58173.516224</TimeCreated>
+
+<XData name="Manifest">
+<XMLNamespace>INSTALLER</XMLNamespace>
+<Data><![CDATA[
+<Manifest>
+  <Default Name="ROUTINES" Value="512"/>
+  <Default Name="GLOBALS8KB" Value="1024"/>
+  <Default Name="GMHEAP" Value="524288"/>
+  <Default Name="LOCKSIZ" Value="48234496"/>
+
+  <SystemSetting Name="Config.Startup.DefaultPort" Value="${SuperServerPort}"/>
+  <SystemSetting Name="Config.Startup.WebServerPort" Value="${WebServerPort}"/>
+  <SystemSetting Name="Config.config.routines" Value="${ROUTINES}"/>
+  <SystemSetting Name="Config.config.globals8kb" Value="${GLOBALS8KB}"/>
+  <SystemSetting Name="Config.config.gmheap" Value="${GMHEAP}"/>
+  <SystemSetting Name="Config.config.locksiz" Value="${LOCKSIZ}"/>
+  <SystemSetting Name="Config.Journal.DaysBeforePurge" Value="2"/>
+  <SystemSetting Name="Config.Journal.BackupsBeforePurge" Value="0"/>
+  <SystemSetting Name="Config.Journal.FileSizeLimit" Value="512"/>
+
+  <Log Level="1" Text="Setting Instance System Mode"/>
+  <Invoke Class="DevOps.CacheDefault" Method="systemMode">
+    <Arg Value="${InstanceSystemMode}"/>
+  </Invoke>
+
+  <Log Level="1" Text="Setting Security Options"/>
+  <Invoke Class="DevOps.CacheDefault" Method="securitySystem"/>
+
+  <Log Level="1" Text="Setting SSL/TLS"/>
+  <Invoke Class="DevOps.CacheDefault" Method="securitySsl">
+    <Arg Value="EmailSSL"/>
+  </Invoke>
+
+  <Log Level="1" Text="Enabling Services"/>
+  <Invoke Class="DevOps.CacheDefault" Method="serviceBindingEnable"/>
+
+  <Log Level="1" Text="Allowing Atelier API"/>
+  <Invoke Class="DevOps.CacheDefault" Method="allowAtelier"/>
+
+	<Log Level="0" Text="Installing Portuguese Unicode Locale"/>
+	<Invoke Class="Config.NLS.Locales" Method="Install" CheckStatus="true">
+		<Arg name="Locale" Value="ptbw"/>
+	</Invoke>
+  <Invoke Class="DevOps.CacheDefault" Method="dateFormatSetting"/>
+
+  <Log Level="0" Text="Setting RenderServer"/>
+  <Invoke Class="DevOps.CacheDefault" Method="zenSetting"/>
+  <Invoke Class="DevOps.CacheDefault" Method="renderServerCreate"/>
+
+  <Log Level="1" Text="Importing users from ${UsersFile}"/>
+  <Invoke Class="Security.Users" Method="Import" CheckStatus="true">
+    <Arg Value="${UsersFile}"/>
+  </Invoke>
+
+</Manifest>
+]]></Data>
+</XData>
+
+<Method name="setup">
+<Internal>1</Internal>
+<ClassMethod>1</ClassMethod>
+<CodeMode>objectgenerator</CodeMode>
+<FormalSpec><![CDATA[&pVars,pLogLevel:%Integer=3,pInstaller:%Installer.Installer,pLogger:%Installer.AbstractLogger]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    Quit ##class(%Installer.Manifest).%Generate(%compiledclass, %code, "Manifest")
+]]></Implementation>
+</Method>
+
+<Method name="securitySystem">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  Write "Setting Security System"
+  Set systemSecurity = ##class(Security.System).%OpenId("SYSTEM")
+  Set systemSecurity.AuditEnabled="1"
+  Set systemSecurity.InactiveLimit="0"
+  Set systemSecurity.PercentGlobalWrite="1"
+  Set systemSecurity.AutheEnabled="9328"
+  Write systemSecurity.%Save()
+]]></Implementation>
+</Method>
+
+<Method name="securitySsl">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pSslName</FormalSpec>
+<Implementation><![CDATA[
+  Set sslProperties("Enabled")="1"
+  Set sslProperties("Description")="SSL Default for Shift"
+  Set sslConfig = ##class(Security.SSLConfigs).Create(pSslName, .sslProperties)
+]]></Implementation>
+</Method>
+
+<Method name="serviceBindingEnable">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  Set serviceBinding = ##class(Security.Services).Get("%Service_Bindings",.serviceBindingProperties)
+  Set serviceBindingProperties("Enabled")="1"
+  Set serviceBinding = ##class(Security.Services).Modify("%Service_Bindings",.serviceBindingProperties)
+]]></Implementation>
+</Method>
+
+<Method name="allowAtelier">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  Set atelier = ##class(Security.Applications).Get("/api/atelier",.atelierProperties)
+  Set atelierProperties("Enabled")="1"
+  Set atelierProperties("MatchRoles")=":%Developer"
+  Set atelier = ##class(Security.Applications).Modify("/api/atelier",.atelierProperties)
+]]></Implementation>
+</Method>
+
+<Method name="dateFormatSetting">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  Set ^SYS("NLS","Config","LocaleFormat")="1"
+  Do Locale^NLSLOAD("ptbw")
+]]></Implementation>
+</Method>
+
+<Method name="zenSetting">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  Set ^%SYS("zenreport","renderserverport")="61724"
+  Set ^%SYS("zenreport","transformerpath")="/usr/local/fop-2.4/fop/fop"
+]]></Implementation>
+</Method>
+
+<Method name="renderServerCreate">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  Set renderServer = ##class(%ZEN.Report.RenderServer).%New()
+  Set renderServer.ConfigFile="/binario/fop/conf/fop.xconf"
+  Set renderServer.LogLevel="0"
+  Set renderServer.MemoryThreshold="1431306240"
+  Set renderServer.Name="renderserver"
+  Set renderServer.PingPort="61725"
+  Set renderServer.Port="61724"
+  Do renderServer.%Save()
+]]></Implementation>
+</Method>
+
+<Method name="systemMode">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pSystemMode</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[  Set ^%SYS("SystemMode") = pSystemMode
+]]></Implementation>
+</Method>
+</Class>
+</Export>

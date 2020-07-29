@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UsersExport>
+  <Users>
+    <AccountNeverExpires>true</AccountNeverExpires>
+    <AutheEnabled>0</AutheEnabled>
+    <ChangePassword>false</ChangePassword>
+    <CreateUsername>SuperUser</CreateUsername>
+    <Enabled>true</Enabled>
+    <ExpirationDate>1840-12-31</ExpirationDate>
+    <Flags>1</Flags>
+    <FullName>Primeiro usuário criado no deploy</FullName>
+    <HOTPKey>fsAO/WRP6KDh9iT1Gj0pRh60o58=</HOTPKey>
+    <HOTPKeyGenerate>false</HOTPKeyGenerate>
+    <HOTPKeyDisplay>false</HOTPKeyDisplay>
+    <Name>usuario1</Name>
+    <Password>gfBjSwBrbMub0DEjrZ6FDcSH62Q=</Password>
+    <PasswordNeverExpires>false</PasswordNeverExpires>
+    <PasswordChangedDateTime>65154,50743.150666</PasswordChangedDateTime>
+    <Roles>
+      <RolesItem>%All</RolesItem>
+    </Roles>
+    <Salt>Qoh9pKSVztw=</Salt>
+  </Users>
+
+  <Users>
+    <AccountNeverExpires>true</AccountNeverExpires>
+    <AutheEnabled>0</AutheEnabled>
+    <ChangePassword>false</ChangePassword>
+    <Comment>Segundo usuário criado no Deploy</Comment>
+    <CreateDateTime>65157,61217.731516</CreateDateTime>
+    <CreateUsername>SuperUser</CreateUsername>
+    <Enabled>true</Enabled>
+    <ExpirationDate>1840-12-31</ExpirationDate>
+    <Flags>1</Flags>
+    <FullName>CSP Gateway</FullName>
+    <HOTPKey>fsAO/WRP6KDh9iT1Gj0pRh60o58=</HOTPKey>
+    <HOTPKeyGenerate>false</HOTPKeyGenerate>
+    <HOTPKeyDisplay>false</HOTPKeyDisplay>
+    <Name>usuario2</Name>
+    <Password>jRPlwQbpQUHrlUpjMCpLxrnBJ+8=</Password>
+    <PasswordNeverExpires>true</PasswordNeverExpires>
+    <PasswordChangedDateTime>65157,61217.755211</PasswordChangedDateTime>
+    <Roles>
+      <RolesItem>%All</RolesItem>
+    </Roles>
+    <Salt>m1AaobLTjQo=</Salt>
+  </Users>
+
+  <Users>
+    <AccountNeverExpires>true</AccountNeverExpires>
+    <AutheEnabled>0</AutheEnabled>
+    <ChangePassword>true</ChangePassword>
+    <Comment>Usuário de administração do banco de dados</Comment>
+    <CreateUsername>SuperUser</CreateUsername>
+    <Enabled>true</Enabled>
+    <ExpirationDate>1840-12-31</ExpirationDate>
+    <Flags>1</Flags>
+    <FullName>João Luiz Messias</FullName>
+    <HOTPKey>fsAO/WRP6KDh9iT1Gj0pRh60o58=</HOTPKey>
+    <HOTPKeyGenerate>false</HOTPKeyGenerate>
+    <HOTPKeyDisplay>false</HOTPKeyDisplay>
+    <Name>joao.sobrinho</Name>
+    <Password>4MFnHscPc1rFneAIAuWGOzVAAsw=</Password>
+    <PasswordNeverExpires>true</PasswordNeverExpires>
+    <PasswordChangedDateTime>65568,43525.116039</PasswordChangedDateTime>
+    <Roles>
+      <RolesItem>%All</RolesItem>
+    </Roles>
+    <Salt>GuSoIbZmxkw=</Salt>
+  </Users>
+
+</UsersExport>
