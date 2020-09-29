@@ -1,0 +1,114 @@
+- name: instalando o repositório epel
+  yum:
+    name: epel-release
+    state: present
+
+- name: instalando pacotes do ssl
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - perl-Net-SSLeay
+    - perl-IO-Socket-SSL
+    - perl-Crypt-SSLeay
+    - openssl
+    - pyOpenSSL
+    - gnutls-utils
+
+- name: instalando biblioteca krb5
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - krb5-libs
+    - krb5-devel
+
+- name: instalando ferramentas uteis
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - vim
+    - unzip
+    - xz
+    - tmux
+    - nfs-utils
+
+- name: criando grupo cacheusr
+  group:
+    name: cacheusr
+    gid: 3000
+    state: present
+
+- name: criando usuario cacheusr
+  user:
+    name: cacheusr
+    comment: Usuário dono do processo do banco de dados
+    uid: 3000
+    group: cacheusr
+    append: no
+    shell: /bin/bash
+    create_home: yes
+    skeleton: /etc/skel
+    state: present
+
+- name: configurando kernel (swap)
+  sysctl:
+    name: vm.swappiness
+    value: '0'
+    sysctl_file: /etc/sysctl.conf
+    state: present
+
+- name: configurando kernel (huge pages)    
+  sysctl:
+    name: vm.nr_hugepages
+    value: "256"
+    sysctl_file: /etc/sysctl.conf
+    state: present
+
+- name: configurando variáveis do Java no arquivo /etc/profile
+  blockinfile:
+    path: /etc/profile
+    marker: '# {mark} - VARIAVEIS JAVA'
+    state: present
+    block: |
+      JAVA_HOME="{{ JAVA_HOME }}"
+      PATH="${PATH}:${JAVA_HOME}/bin"
+      CLASSPATH="${JAVA_HOME}/lib"
+      MANPATH="${JAVA_HOME}/man"
+  vars:
+    JAVA_HOME:
+      /usr/local/java/jre1.8.0_251
+
+- name: configurando variável RENDERSERVERMEMSIZE no arquivo /etc/profile
+  lineinfile:
+    path: /etc/profile
+    state: present
+    regexp: '^RENDERSERVERMEMSIZE'
+    line: 'RENDERSERVERMEMSIZE=2g'
+
+- name: configurando variável HISTTIMEFORMAT no arquivo /etc/profile
+  lineinfile:
+    path: /etc/profile
+    state: present
+    regexp: '^HISTTIMEFORMAT'
+    line: 'HISTTIMEFORMAT="%F %T "'
+
+- name: desativar selinux
+  selinux:
+    conf: /etc/selinux/config
+    policy: targeted
+    state: disabled
+
+- name: desativar firewall
+  service:
+    name: firewalld
+    enabled: no
+    state: stopped
+
+- name: configuração de timezone para America/Sao_Paulo
+  timezone:
+    name: America/Sao_Paulo

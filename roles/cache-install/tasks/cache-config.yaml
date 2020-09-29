@@ -1,0 +1,28 @@
+- name: criar diretorio /inst/
+  file:
+    path: "{{ item.diretorio }}"
+    recurse: no
+    state: directory
+    mode: '0775'
+    owner: cacheusr
+    group: cacheusr
+  loop:
+    - { diretorio: /inst }
+    - { diretorio: /inst/kit }
+    - { diretorio: /inst/pacotes }
+    - { diretorio: /inst/cache }
+
+- name: criar diretorio de uso do caché
+  file:
+    path: "{{ item.diretorio }}"
+    recurse: no
+    state: directory
+    mode: '0775'
+    owner: cacheusr
+    group: cacheusr
+  loop:
+    - { diretorio: /backup }
+    - { diretorio: /binario }
+    - { diretorio: /dados }
+    - { diretorio: /journal1 }
+    - { diretorio: /journal2 }

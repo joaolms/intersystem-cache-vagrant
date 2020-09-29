@@ -1,0 +1,16 @@
+- hosts: all
+  gather_facts: yes
+  # user: vagrant
+  become: yes
+  # pre_tasks:
+  # - name: 'atualizando o repo'
+  #   raw: 'yum update -y'
+  # - name: 'instalando o python para uso do ansible'
+  #   raw: 'yum install -y python'
+  
+- hosts: db
+  gather_facts: yes
+  user: vagrant
+  become: yes
+  roles:
+  - { role: cache-install }
