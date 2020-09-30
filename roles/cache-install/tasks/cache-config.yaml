@@ -26,3 +26,44 @@
     - { diretorio: /dados }
     - { diretorio: /journal1 }
     - { diretorio: /journal2 }
+
+- name: instalando pacotes poppler-utils e poppler-data
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - poppler-utils
+    - poppler-data
+
+- name: alterando o pam_limits soft para nofile
+  pam_limits:
+    domain: cacheusr
+    limit_type: soft
+    limit_item: nofile
+    value: '10240'
+    use_max: yes
+
+- name: alterando o pam_limits hard para nofile
+  pam_limits:
+    domain: cacheusr
+    limit_type: hard
+    limit_item: nofile
+    value: '10240'
+    use_max: yes
+
+- name: alterando o pam_limits soft para nproc
+  pam_limits:
+    dest: /etc/security/limits.d/20-nproc.conf
+    domain: cacheusr
+    limit_type: soft
+    limit_item: nproc
+    value: unlimited
+
+- name: alterando o pam_limits hard para nproc
+  pam_limits:
+    dest: /etc/security/limits.d/20-nproc.conf
+    domain: cacheusr
+    limit_type: hard
+    limit_item: nproc
+    value: unlimited

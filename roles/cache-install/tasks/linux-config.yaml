@@ -1,3 +1,8 @@
+- name: configurando hostname para dbserver
+  hostname:
+    name: dbserver
+    use: systemd
+
 - name: instalando o repositório epel
   yum:
     name: epel-release
@@ -55,20 +60,6 @@
     skeleton: /etc/skel
     state: present
 
-- name: configurando kernel (swap)
-  sysctl:
-    name: vm.swappiness
-    value: '0'
-    sysctl_file: /etc/sysctl.conf
-    state: present
-
-- name: configurando kernel (huge pages)    
-  sysctl:
-    name: vm.nr_hugepages
-    value: "256"
-    sysctl_file: /etc/sysctl.conf
-    state: present
-
 - name: configurando variáveis do Java no arquivo /etc/profile
   blockinfile:
     path: /etc/profile
@@ -112,3 +103,76 @@
 - name: configuração de timezone para America/Sao_Paulo
   timezone:
     name: America/Sao_Paulo
+
+- name: configurando kernel (swap)
+  sysctl:
+    name: vm.swappiness
+    value: '0'
+    sysctl_file: /etc/sysctl.conf
+    state: present
+
+- name: removendo configuração de hugepages no arquivo /etc/sysctl.conf
+  sysctl:
+    name: vm.nr_hugepages
+    sysctl_file: /etc/sysctl.conf
+    state: absent
+  when: ansible_memtotal_mb < 65001
+
+- name: configurar parâmetro vm.nr_hugepages = 2600
+  sysctl:
+    name: vm.nr_hugepages
+    sysctl_file: /etc/sysctl.conf
+    value: '2600'
+    state: present
+  when:
+    - ansible_memtotal_mb >= 7500
+    - ansible_memtotal_mb < 10000
+
+- name: configurar parâmetro vm.nr_hugepages = 4000
+  sysctl:
+    name: vm.nr_hugepages
+    sysctl_file: /etc/sysctl.conf
+    value: '4000'
+    state: present
+  when:
+    - ansible_memtotal_mb >= 10000
+    - ansible_memtotal_mb < 14000
+
+- name: configurar parâmetro vm.nr_hugepages = 5420
+  sysctl:
+    name: vm.nr_hugepages
+    sysctl_file: /etc/sysctl.conf
+    value: '5420'
+    state: present
+  when:
+    - ansible_memtotal_mb >= 14000
+    - ansible_memtotal_mb < 30000
+
+- name: configurar parâmetro vm.nr_hugepages = 10650
+  sysctl:
+    name: vm.nr_hugepages
+    sysctl_file: /etc/sysctl.conf
+    value: '10650'
+    state: present
+  when:
+    - ansible_memtotal_mb >= 30000
+    - ansible_memtotal_mb < 50000
+
+- name: configurar parâmetro vm.nr_hugepages = 22528
+  sysctl:
+    name: vm.nr_hugepages
+    sysctl_file: /etc/sysctl.conf
+    value: '22528'
+    state: present
+  when:
+    - ansible_memtotal_mb >= 50000
+    - ansible_memtotal_mb < 100000
+
+- name: configurar parâmetro vm.nr_hugepages = 34040
+  sysctl:
+    name: vm.nr_hugepages
+    sysctl_file: /etc/sysctl.conf
+    value: '34040'
+    state: present
+  when: ansible_memtotal_mb >= 100000
+
