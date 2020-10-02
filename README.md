@@ -28,7 +28,7 @@ exit
 
 ### Destroy
 ```sh
-vagarant destroy -f
+vagrant destroy -f
 ```
 
 ### Access

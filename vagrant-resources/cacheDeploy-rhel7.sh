@@ -7,7 +7,7 @@
 
 SHIFTPHRASEMOD="### Custom ###"
 CACHEUSER="cacheusr"
-CACHEGROUP=$CACHEUSER
+CACHEGROUP=${CACHEUSER}
 PS1='PS1="[\[\033[1;31m\]\u\[\033[0m\]]@[\[\033[1;32m\]\H\[\033[0m\]]:[\W]\\$ "'
 RENDERSERVERMEMSIZE="2048m"
 
@@ -215,7 +215,7 @@ sysctlConf() {
         if [[ $(grep -E ^vm.nr_hugepages=${pnrHugePagesValue}$ ${sysctlFile}) ]]; then
             echo -e "Huge Pages value is correct"
         elif [[ $(grep -E ^vm.nr_hugepages ${sysctlFile}) ]]; then
-            echo -e "Switching vm.nr_hugepages value from$(grep -E ^vm.nr_hugepages ${sysctlFile} | cut -d"=" -f2) to $(echo ${pnrHugePagesValue})"
+            echo -e "Switching1' vm.nr_hugepages value from$(grep -E ^vm.nr_hugepages ${sysctlFile} | cut -d"=" -f2) to $(echo ${pnrHugePagesValue})"
             sed -E -i 's~^vm.nr_hugepages~#vm.nr_hugepages~g' ${sysctlFile}
             echo "vm.nr_hugepages=${pnrHugePagesValue}" >> ${sysctlFile}
         else
@@ -393,39 +393,32 @@ xpdftoolsInstall() {
 # Default configuration for Linux
 linuxDefault() {
     hostsConf
-    extrasPackages
-    changePS1
-    changeProfileFile
-    createUsers
-    sshSecurity
-    timezoneConfig
-    securityOff
+    # extrasPackages
+    # - changePS1
+    # changeProfileFile
+    # createUsers
+    # - sshSecurity
+    # timezoneConfig
+    # securityOff
 }
 
 dbServer() {
-    linuxDefault
-    instDirectory
-    changeLimitsconf
-    xpdftoolsInstall
-    sysctlConf
-    fontExtra
-    directoryPermission
-    sendEmailPkgInstall
-    javaInstall
-    fopInstall
-    qpdfInstall
-    wkhtmltopdfInstall
+    # linuxDefault
+    # instDirectory
+    # changeLimitsconf
+    # xpdftoolsInstall
+    # sysctlConf # vm.nrhugepage ok / shmmax não configurado
+    # fontExtra
+    # directoryPermission
+    # sendEmailPkgInstall
+    # javaInstall
+    # fopInstall
+    # qpdfInstall
+    # wkhtmltopdfInstall
     cacheInstall
 }
 
 
 # End of Functions
 
-case "$1" in
-    db)
-	    dbServer
-        ;;
-    *)
-        echo "Informe um dos parametros a seguir: {|db|}"
-        exit 1
-esac
+dbServer

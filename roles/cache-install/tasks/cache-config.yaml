@@ -1,3 +1,4 @@
+---
 - name: criar diretorio /inst/
   file:
     path: "{{ item.diretorio }}"
@@ -11,6 +12,7 @@
     - { diretorio: /inst/kit }
     - { diretorio: /inst/pacotes }
     - { diretorio: /inst/cache }
+    - { diretorio: /usr/share/fonts/extra }
 
 - name: criar diretorio de uso do caché
   file:
@@ -67,3 +69,136 @@
     limit_type: hard
     limit_item: nproc
     value: unlimited
+
+- name: pacotes de fonts extra
+  get_url:
+    url: https://shiftpkg.nyc3.digitaloceanspaces.com/requirements/extra.zip
+    dest: /inst/pacotes/
+
+- name: descompactar arquivo de fonts extra.zip
+  unarchive:
+    remote_src: yes
+    src: /inst/pacotes/extra.zip
+    dest: /usr/share/fonts/extra/
+  # notify:
+  #   - fc-cache
+
+- name: recriando o cache de fonts do sistema
+  shell: fc-cache -f -v
+
+- name: verificando se já tem o java instalado na versão jre-8u251
+  command: /usr/bin/test -e /usr/local/java/jre1.8.0_251/bin/java
+  ignore_errors: True
+  register: jre_bin
+
+- name: download do java jre da oracle
+  get_url:
+    url: https://shiftpkg.nyc3.digitaloceanspaces.com/requirements/jre-8u251-linux-x64.tar.gz
+    dest: /inst/pacotes/
+  when: jre_bin is failed
+
+- name: criando diretorio /usr/local/java
+  file:
+    path: "/usr/local/java"
+    recurse: no
+    state: directory
+    mode: '0775'
+    owner: root
+    group: root
+    
+- name: descompactar arquivo java jre da oracle
+  unarchive:
+    remote_src: yes
+    src: /inst/pacotes/jre-8u251-linux-x64.tar.gz
+    dest: /usr/local/java/
+  when: jre_bin is failed
+
+- name: verificando se já tem o fop instalado
+  command: /usr/bin/test -e /usr/local/fop/fop-2.4/fop/fop
+  ignore_errors: True
+  register: fop_bin
+
+- name: download do fop 2.4
+  get_url:
+    url: https://shiftpkg.nyc3.digitaloceanspaces.com/requirements/fop-2.4-bin.tar.gz
+    dest: /inst/pacotes/
+  when: fop_bin is failed
+
+- name: criando diretorio /usr/local/fop
+  file:
+    path: "/usr/local/fop"
+    recurse: no
+    state: directory
+    mode: '0775'
+    owner: root
+    group: root
+
+- name: descompactar fop em /usr/local/
+  unarchive:
+    remote_src: yes
+    src: /inst/pacotes/fop-2.4-bin.tar.gz
+    dest: /usr/local/fop/
+  when: fop_bin is failed
+
+- name: instalando pacotes necessários para o qpdf
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - "@Development tools"
+      - zlib
+      - zlib-devel
+      - libjpeg-turbo-devel
+
+- name: verificando se já tem o qpdf instalado
+  command: /usr/bin/test -e /usr/local/bin/qpdf
+  ignore_errors: True
+  register: qpdf_bin
+
+- name: download do qpdf
+  get_url:
+    url: https://shiftpkg.nyc3.digitaloceanspaces.com/requirements/qpdf-9.1.1.tar.gz
+    dest: /inst/pacotes
+  when: qpdf_bin is failed
+
+
+- name: descompactar pacote do qpdf
+  unarchive:
+    remote_src: yes
+    src: /inst/pacotes/qpdf-9.1.1.tar.gz
+    dest: /opt/
+  when: qpdf_bin is failed
+
+- name: compilação e instalação do qpdf
+  shell: |
+    cd /opt/qpdf-9.1.1/
+    ./configure
+    make
+    make install
+  when: qpdf_bin is failed
+
+- name: instalando pacotes necessários para o wkhtmltopdf
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - fontconfig
+      - libX11
+      - libXext
+      - libXrender
+      - xorg-x11-fonts-Type1
+      - xorg-x11-fonts-75dpi
+
+- name: verificando se já tem o wkhtmltopdf instalado
+  command: /usr/bin/test -e /usr/local/bin/wkhtmltopdf
+  ignore_errors: True
+  register: wkhtmltopdf_bin
+
+- name: instalando o wkhtmltopdf
+  yum:
+    name: https://shiftpkg.nyc3.digitaloceanspaces.com/requirements/wkhtmltox-0.12.5-1.centos7.x86_64.rpm
+    state: present
+  when: wkhtmltopdf_bin is failed
+

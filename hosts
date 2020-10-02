@@ -1,7 +1,5 @@
 [db]
-192.168.56.110 ansible_user=vagrant ansible_ssh_private_key_file=".vagrant/machines/CACHE/virtualbox/private_key"
-
-[web]
+192.168.56.110
 
 [db:vars]
 ENVIRONMENT=PRODUCTION

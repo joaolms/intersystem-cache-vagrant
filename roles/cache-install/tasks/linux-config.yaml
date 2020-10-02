@@ -8,7 +8,7 @@
     name: epel-release
     state: present
 
-- name: instalando pacotes do ssl
+- name: instalando pacotes para ssl
   yum:
     name: "{{ packages }}"
     state: present
@@ -116,7 +116,7 @@
     name: vm.nr_hugepages
     sysctl_file: /etc/sysctl.conf
     state: absent
-  when: ansible_memtotal_mb < 65001
+  when: ansible_memtotal_mb < 7000
 
 - name: configurar parâmetro vm.nr_hugepages = 2600
   sysctl:
@@ -125,7 +125,7 @@
     value: '2600'
     state: present
   when:
-    - ansible_memtotal_mb >= 7500
+    - ansible_memtotal_mb >= 7000
     - ansible_memtotal_mb < 10000
 
 - name: configurar parâmetro vm.nr_hugepages = 4000
