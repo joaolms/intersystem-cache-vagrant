@@ -80,8 +80,6 @@
     remote_src: yes
     src: /inst/pacotes/extra.zip
     dest: /usr/share/fonts/extra/
-  # notify:
-  #   - fc-cache
 
 - name: recriando o cache de fonts do sistema
   shell: fc-cache -f -v
@@ -202,3 +200,53 @@
     state: present
   when: wkhtmltopdf_bin is failed
 
+- name: verificar se há alguma instância do caché instalada
+  command: ccontrol list
+  ignore_errors: True
+  register: iscacheinstalled
+
+- name: download do caché
+  get_url:
+    url: https://shiftpkg.nyc3.digitaloceanspaces.com/intersystems/cache-2018.1.4.505.1-lnxrhx64.tar.gz
+    dest: /inst/
+  when: iscacheinstalled is failed
+
+- name: descompactar o pacote de instalação do caché
+  unarchive:
+    remote_src: yes
+    src: /inst/cache-2018.1.4.505.1-lnxrhx64.tar.gz
+    dest: /inst/
+  when: iscacheinstalled is failed
+
+- name: copiar arquivo de manifesto do caché
+  copy:
+    remote_src: no
+    src: /home/joaolms/src/intersystems-cache-vagrant/vagrant-resources/CacheDefault.xml
+    dest: /inst/CacheDefault.xml
+  when: iscacheinstalled is failed
+
+- name: copiar arquivo de usuaŕios do caché
+  copy:
+    remote_src: no
+    src: /home/joaolms/src/intersystems-cache-vagrant/vagrant-resources/cacheusers.xml
+    dest: /inst/cacheusers.xml
+  when: iscacheinstalled is failed
+
+- name: instalar a instância do caché
+  command: /inst/cache-2018.1.4.505.1-lnxrhx64/cinstall_silent
+  environment:
+    - ISC_PACKAGE_INSTANCENAME: CACHE
+    - ISC_PACKAGE_INSTALLDIR: /binario
+    - ISC_PACKAGE_UNICODE: Y
+    - ISC_PACKAGE_INITIAL_SECURITY: Locked Down
+    - ISC_PACKAGE_CACHEUSER: cacheusr
+    - ISC_PACKAGE_CACHEGROUP: cacheusr
+    - ISC_PACKAGE_MGRUSER: cacheusr
+    - ISC_PACKAGE_MGRGROUP: cacheusr
+    - ISC_PACKAGE_USER_PASSWORD: superuser123
+    - ISC_PACKAGE_CSPSYSTEM_PASSWORD: S3nh@T3mp02
+    - ISC_PACKAGE_CSP_CONFIGURE: N
+    - ISC_PACKAGE_STARTCACHE: Y
+    - ISC_INSTALLER_PARAMETERS: SuperServerPort=56772,WebServerPort=57772,UsersFile=/inst/cacheusers.xml,InstanceSystemMode=DEVELOPMENT
+    - ISC_INSTALLER_MANIFEST: /inst/CacheDefault.xml
+  when: iscacheinstalled is failed

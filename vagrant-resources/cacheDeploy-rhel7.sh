@@ -393,32 +393,30 @@ xpdftoolsInstall() {
 # Default configuration for Linux
 linuxDefault() {
     hostsConf
-    # extrasPackages
-    # - changePS1
-    # changeProfileFile
-    # createUsers
-    # - sshSecurity
-    # timezoneConfig
-    # securityOff
+    extrasPackages
+    changePS1
+    changeProfileFile
+    createUsers
+    sshSecurity
+    timezoneConfig
+    securityOff
 }
 
 dbServer() {
-    # linuxDefault
-    # instDirectory
-    # changeLimitsconf
-    # xpdftoolsInstall
-    # sysctlConf # vm.nrhugepage ok / shmmax não configurado
-    # fontExtra
-    # directoryPermission
-    # sendEmailPkgInstall
-    # javaInstall
-    # fopInstall
-    # qpdfInstall
-    # wkhtmltopdfInstall
+    linuxDefault
+    instDirectory
+    changeLimitsconf
+    xpdftoolsInstall
+    sysctlConf
+    fontExtra
+    directoryPermission
+    sendEmailPkgInstall
+    javaInstall
+    fopInstall
+    qpdfInstall
+    wkhtmltopdfInstall
     cacheInstall
 }
 
-
-# End of Functions
-
+# Main
 dbServer
