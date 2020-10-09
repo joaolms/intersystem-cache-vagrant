@@ -1,0 +1,9 @@
+---
+- name: is cache install
+  command: ccontrol list
+  register: iscacheinstall
+  ignore_errors: True
+
+- name: Print a variable
+  ansible.builtin.debug:
+    var: iscacheinstall

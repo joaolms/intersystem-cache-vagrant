@@ -1,3 +1,4 @@
+---
 - name: configurando hostname para dbserver
   hostname:
     name: dbserver

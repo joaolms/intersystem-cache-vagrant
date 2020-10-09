@@ -1,0 +1,41 @@
+- name: download do caché
+  get_url:
+    url: https://shiftpkg.nyc3.digitaloceanspaces.com/intersystems/cache-2018.1.4.505.1-lnxrhx64.tar.gz
+    dest: /inst/
+
+- name: descompactar o pacote de instalação do caché
+  unarchive:
+    remote_src: yes
+    src: /inst/cache-2018.1.4.505.1-lnxrhx64.tar.gz
+    dest: /inst/
+
+- name: copiar arquivo de manifesto do caché
+  copy:
+    remote_src: no
+    src: /home/joaolms/src/intersystems-cache-vagrant/vagrant-resources/CacheDefault.xml
+    dest: /inst/CacheDefault.xml
+
+- name: copiar arquivo de usuaŕios do caché
+  copy:
+    remote_src: no
+    src: /home/joaolms/src/intersystems-cache-vagrant/vagrant-resources/cacheusers.xml
+    dest: /inst/cacheusers.xml
+
+- name: instalar a instância do caché
+  command: /inst/cache-2018.1.4.505.1-lnxrhx64/cinstall_silent
+  environment:
+    - ISC_PACKAGE_INSTANCENAME: "{{ ISC_PACKAGE_INSTANCENAME }}"
+    - ISC_PACKAGE_INSTALLDIR: "{{ ISC_PACKAGE_INSTALLDIR }}"
+    - ISC_PACKAGE_UNICODE: "{{ ISC_PACKAGE_UNICODE }}"
+    - ISC_PACKAGE_INITIAL_SECURITY: "{{ ISC_PACKAGE_INITIAL_SECURITY }}"
+    - ISC_PACKAGE_CACHEUSER: "{{ ISC_PACKAGE_CACHEUSER }}"
+    - ISC_PACKAGE_CACHEGROUP: "{{ ISC_PACKAGE_CACHEGROUP }}"
+    - ISC_PACKAGE_MGRUSER: "{{ ISC_PACKAGE_MGRUSER }}"
+    - ISC_PACKAGE_MGRGROUP: "{{ ISC_PACKAGE_MGRGROUP }}"
+    - ISC_PACKAGE_USER_PASSWORD: "{{ ISC_PACKAGE_USER_PASSWORD }}"
+    - ISC_PACKAGE_CSPSYSTEM_PASSWORD: "{{ ISC_PACKAGE_CSPSYSTEM_PASSWORD }}"
+    - ISC_PACKAGE_CSP_CONFIGURE: "{{ ISC_PACKAGE_CSP_CONFIGURE }}"
+    - ISC_PACKAGE_STARTCACHE: "{{ ISC_PACKAGE_STARTCACHE }}"
+    - ISC_INSTALLER_MANIFEST: "{{ ISC_INSTALLER_MANIFEST }}"
+    - ISC_INSTALLER_PARAMETERS: SuperServerPort={{ SuperServerPort }},WebServerPort={{ WebServerPort }},UsersFile={{ UsersFile }},InstanceSystemMode={{ InstanceSystemMode }}
+  

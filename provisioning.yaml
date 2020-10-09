@@ -9,8 +9,9 @@
   #   raw: 'yum install -y python'
   
 - hosts: db
-  gather_facts: yes
   user: vagrant
   become: yes
   roles:
-  - { role: cache-install }
+  - role: linux-config
+  - role: cache-prereq
+  - role: cache-install
