@@ -13,13 +13,13 @@
   copy:
     remote_src: no
     src: /home/joaolms/src/intersystems-cache-vagrant/vagrant-resources/CacheDefault.xml
-    dest: /inst/CacheDefault.xml
+    dest: "{{ ISC_INSTALLER_MANIFEST }}"
 
 - name: copiar arquivo de usuaŕios do caché
   copy:
     remote_src: no
     src: /home/joaolms/src/intersystems-cache-vagrant/vagrant-resources/cacheusers.xml
-    dest: /inst/cacheusers.xml
+    dest: "{{ UsersFile }}"
 
 - name: instalar a instância do caché
   command: /inst/cache-2018.1.4.505.1-lnxrhx64/cinstall_silent
