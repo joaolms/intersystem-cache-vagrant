@@ -42,6 +42,7 @@
     - xz
     - tmux
     - nfs-utils
+    - net-tools
 
 - name: criando grupo cacheusr
   group:
@@ -67,10 +68,10 @@
     marker: '# {mark} - VARIAVEIS JAVA'
     state: present
     block: |
-      JAVA_HOME="{{ JAVA_HOME }}"
-      PATH="${PATH}:${JAVA_HOME}/bin"
-      CLASSPATH="${JAVA_HOME}/lib"
-      MANPATH="${JAVA_HOME}/man"
+      export JAVA_HOME="{{ JAVA_HOME }}"
+      export PATH="${PATH}:${JAVA_HOME}/bin"
+      export CLASSPATH="${JAVA_HOME}/lib"
+      export MANPATH="${JAVA_HOME}/man"
   vars:
     JAVA_HOME:
       /usr/local/java/jre1.8.0_251
@@ -80,14 +81,14 @@
     path: /etc/profile
     state: present
     regexp: '^RENDERSERVERMEMSIZE'
-    line: 'RENDERSERVERMEMSIZE=2g'
+    line: 'export RENDERSERVERMEMSIZE=2g'
 
 - name: configurando variável HISTTIMEFORMAT no arquivo /etc/profile
   lineinfile:
     path: /etc/profile
     state: present
     regexp: '^HISTTIMEFORMAT'
-    line: 'HISTTIMEFORMAT="%F %T "'
+    line: 'export HISTTIMEFORMAT="%F %T "'
 
 - name: desativar selinux
   selinux:
