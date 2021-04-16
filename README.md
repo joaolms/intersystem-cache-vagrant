@@ -1,4 +1,5 @@
 # intersystem-cache-vagrant
+[![Codeac](https://static.codeac.io/badges/2-283513991.svg "Codeac")](https://app.codeac.io/github/joaolms/intersystems-cache-vagrant)
 
 This script sets up an InterSystems Caché Database server
 
